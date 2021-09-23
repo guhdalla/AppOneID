@@ -9,6 +9,7 @@ import { CadastroEmpresa, CadastroEndereco, CadastroServicos } from './CadastroJ
 import CadastroDecisao from './CadastroDecisao';
 import { CadastroCPF } from './CadastroFisico';
 import { createUsuarioFisico } from '../../util/api/usuario/fisico/UsuarioFisicoAPI';
+import { createUsuarioJuridico } from '../../util/api/usuario/juridico/UsuarioJuridicoAPI';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,12 +30,18 @@ export default function CadastroTabs({ route, navigation }) {
     const [numero, setNumero] = useState('');
     const [bairro, setBairro] = useState('');
     const [cidade, setCidade] = useState('');
+    const [complemento, setComplemento] = useState('');
     const [UF, setUF] = useState('');
-    const [authenticateID, setAuthenticateID] = useState(0);
-    const [entranceID, setEntranceID] = useState(0);
+    const [authenticateID, setAuthenticateID] = useState(false);
+    const [entranceID, setEntranceID] = useState(false);
 
-    const cadastrar = async () => {
+    const cadastrarFisico = async () => {
         await createUsuarioFisico(firstName, lastName, dataNascimento, email, celular, senha, CPF);
+    }
+
+    const cadastrarJuridico = async () => {
+        await  createUsuarioJuridico(firstName, lastName, dataNascimento, email, celular, senha, 
+            CNPJ, entranceID, authenticateID, nomeFantasia, razaoSocial, bairro, CEP, cidade, complemento, numero, rua, UF);
     }
 
     return (
@@ -49,10 +56,11 @@ export default function CadastroTabs({ route, navigation }) {
                 setCelular={setCelular}
                 setEmail={setEmail}
                 setSenha={setSenha}
+                setDataNascimento={setDataNascimento}
             />
             <CadastroDecisao setDesicao={setDecicao} />
             {decicao == 1 &&
-                <CadastroCPF setCPF={setCPF} cadastrar={cadastrar} />
+                <CadastroCPF setCPF={setCPF} cadastrar={cadastrarFisico} />
             }
             {decicao == 2 &&
                 <CadastroEmpresa
@@ -69,6 +77,7 @@ export default function CadastroTabs({ route, navigation }) {
                     setBairro={setBairro}
                     setCidade={setCidade}
                     setUF={setUF}
+                    setComplemento={setComplemento}
                 />
             }
             {decicao == 2 &&
@@ -77,6 +86,7 @@ export default function CadastroTabs({ route, navigation }) {
                     entranceID={entranceID}
                     setEntranceID={setEntranceID}
                     setAuthenticateID={setAuthenticateID}
+                    cadastrar={cadastrarJuridico}
                 />
             }
 

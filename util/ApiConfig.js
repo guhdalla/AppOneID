@@ -1,1 +1,1 @@
-export const ApiUri = "localhost:8080"
+export const ApiUri = "http://192.168.18.5:8080"

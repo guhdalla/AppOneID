@@ -23,7 +23,7 @@ export function CadastroEmpresa({ setNomeFantasia, setCNPJ, setRazaoSocial }) {
   );
 }
 
-export function CadastroEndereco({ setCEP, setRua, setNumero, setBairro, setCidade, setUF }) {
+export function CadastroEndereco({ setCEP, setRua, setNumero, setBairro, setCidade, setUF, setComplemento }) {
   return (
     <View style={styles.container}>
 
@@ -37,12 +37,13 @@ export function CadastroEndereco({ setCEP, setRua, setNumero, setBairro, setCida
       <InputOneID title="Bairro" onChange={setBairro} />
       <InputOneID title="Cidade" onChange={setCidade} />
       <InputOneID title="UF" onChange={setUF} />
+      <InputOneID title="Complemento" onChange={setComplemento} />
 
     </View>
   );
 }
 
-export function CadastroServicos({authenticateID, entranceID, setEntranceID, setAuthenticateID}) {
+export function CadastroServicos({ authenticateID, entranceID, setEntranceID, setAuthenticateID, cadastrar }) {
   return (
     <View style={styles.container}>
 
@@ -59,9 +60,9 @@ export function CadastroServicos({authenticateID, entranceID, setEntranceID, set
         </Text>
 
 
-        <ButtonOneID title={authenticateID == 0? "Adicionar AuthenticateID" : "AuthenticateID Adicionado"} 
-        onPress={() => {authenticateID == 0? setAuthenticateID(1) : setAuthenticateID(0)}}
-        style={authenticateID == 0? "default" : "green"}
+        <ButtonOneID title={authenticateID ? "AuthenticateID Adicionado" : "Adicionar AuthenticateID"}
+          onPress={() => { authenticateID ? setAuthenticateID(false) : setAuthenticateID(true) }}
+          style={authenticateID ? "green" : "default"}
         />
 
       </View>
@@ -74,13 +75,13 @@ export function CadastroServicos({authenticateID, entranceID, setEntranceID, set
           Controle o acesso de seu estabelecimento ou evento através de nosso dispositivo acompanhado com uma interface web mostrando um dashboard com todas atividades.
         </Text>
 
-        <ButtonOneID title={entranceID == 0? "Adicionar EntranceID" : "EntranceID Adicionado"} 
-        onPress={() => {entranceID == 0? setEntranceID(1) : setEntranceID(0)}} 
-        style={entranceID == 0? "default" : "green"}
+        <ButtonOneID title={entranceID ? "EntranceID Adicionado" : "Adicionar EntranceID"}
+          onPress={() => { entranceID ? setEntranceID(false) : setEntranceID(true) }}
+          style={entranceID ? "green" : "default"}
         />
       </View>
 
-      <ButtonOneID title="Cadastrar" />
+      <ButtonOneID title="Cadastrar" onPress={() => cadastrar()} />
     </View>
   );
 }

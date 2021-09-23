@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
+import { getAllUsuarioFisico } from '../../util/api/usuario/fisico/UsuarioFisicoAPI';
 import ButtonOneID from '../ButtonOneID';
 import InputOneID from '../InputOneID';
 
@@ -17,7 +18,8 @@ export function CadastroCPF({ setCPF, cadastrar }) {
 
             <InputOneID title="CPF" onChange={setCPF} />
             <View style={styles.containerButton}>
-                <ButtonOneID title="Cadastrar" onPress={() => cadastrar} />
+                <ButtonOneID title="Cadastrar" onPress={() => cadastrar()} />
+                <ButtonOneID title="Get" onPress={() => getAllUsuarioFisico()} />
             </View>
 
 

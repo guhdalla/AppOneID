@@ -5,8 +5,8 @@ export const createUsuarioFisico = async (primeiroNome, sobrenome, dataNasciment
         const response = await fetch(ApiUri + "/api/usuario/fisico", {
             method: 'POST',
             headers: {
-                Accept: 'aplication/json',
-                'Content-Type': 'aplication/json'
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 "primeiroNome": primeiroNome,
@@ -16,15 +16,13 @@ export const createUsuarioFisico = async (primeiroNome, sobrenome, dataNasciment
                 "telefone": telefone,
                 "senha": senha,
                 "cpf": cpf,
-                // "fotoPerfil": "foto"
+                "fotoPerfil": "foto"
             })
         })
         const json = await response.text();
         console.log(response.status);
-        console.log("json")
         console.log(json)
     } catch (error) {
-        console.error("error");
         console.error(error);
     }
 }
