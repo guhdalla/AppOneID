@@ -9,16 +9,15 @@ export const login = async (email, senha) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
-                "senha": senha
+                "username": email,
+                "password": senha
             })
         })
         console.log(response.status);
         if (response.status != 200) {
-            const json = await response.text();
-            return;
+            return null;
         } 
-        const json = await response.json();
+        const json = await response.text();
         return json;
     } catch (error) {
         console.error(error);

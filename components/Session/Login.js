@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { UserContext } from '../../context/UserContext';
+import { View, StyleSheet, Text } from 'react-native';
+import { TokenContext, UserContext } from '../../context/UserContext';
+import { _textSession } from '../../styles/colors';
 import { login } from '../../util/api/log/in/LoginAPI';
+import AlertOneID from '../AlertOneID';
 import ButtonOneID from '../ButtonOneID';
 import ButtonTextOneID from '../ButtonTextOneID';
 import InputOneID from '../InputOneID';
@@ -12,27 +14,36 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const [isInvalid, setInvalid] = useState(false);
 
-  const context = useContext(UserContext);
+  const userContext = useContext(UserContext);
+  const tokenContext = useContext(TokenContext);
 
   const isLogged = async () => {
     setLoading(true);
-    const user = await login(email, senha)
-    if (user != null) {
-      context.setUserData(user);
+    setInvalid(false);
+    const token = await login(email, senha)
+    
+    if (token != null) {
+      tokenContext.setToken("Bearer " + token);
       navigation.navigate("Navbar");
+    } else {
+      setInvalid(true);
     }
-    console.log(user)
     setLoading(false);
   }
 
   useEffect(() => {
-    context.setUserData(null);
+    userContext.setUserData(null);
+    tokenContext.setToken(null);
   }, []);
   return (
     <View style={styles.container}>
 
       <LogoOneID />
+      {isInvalid &&
+        <AlertOneID message="Login Invalido!" type="invalid"/>
+      }
       <InputOneID title="Digite seu email" onChange={setEmail} />
       <InputOneID title="Digite sua senha" secure={true} onChange={setSenha} />
 
@@ -40,7 +51,7 @@ export default function Login({ navigation }) {
         <ButtonOneID title="Login" onPress={() => isLogged()} />
       }
       {isLoading &&
-        <Loading />
+        <Loading color={_textSession} />
       }
       <ButtonTextOneID title="Cagastre-se" onPress={() => navigation.navigate("Cadastro")} />
     </View>

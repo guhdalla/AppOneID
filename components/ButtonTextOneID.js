@@ -17,7 +17,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
       },
-      containerButton: {
-        marginTop: 25
-      }
 })
