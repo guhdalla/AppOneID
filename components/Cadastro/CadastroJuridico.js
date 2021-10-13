@@ -2,6 +2,8 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import ButtonOneID from '../ButtonOneID';
 import InputOneID from '../InputOneID';
+import MaskCEP from '../Mask/MaskCEP';
+import MaskCNPJ from '../Mask/MaskCNPJ';
 
 // You can import from local files
 
@@ -16,7 +18,7 @@ export function CadastroEmpresa({ setNomeFantasia, setCNPJ, setRazaoSocial }) {
       </View>
 
       <InputOneID title="Nome fantasia" onChange={setNomeFantasia} />
-      <InputOneID title="CNPJ" onChange={setCNPJ} />
+      <MaskCNPJ title="CNPJ" onChange={setCNPJ} keyboardType="numeric"/>
       <InputOneID title="Razão social" onChange={setRazaoSocial} />
 
     </View>
@@ -31,9 +33,9 @@ export function CadastroEndereco({ setCEP, setRua, setNumero, setBairro, setCida
         <Text style={styles.text}>Preencha os dados do endereço de sua empresa.</Text>
       </View>
 
-      <InputOneID title="CEP" onChange={setCEP} />
+      <MaskCEP title="CEP" onChange={setCEP} keyboardType="numeric"/>
       <InputOneID title="Rua" onChange={setRua} />
-      <InputOneID title="Numero" onChange={setNumero} />
+      <InputOneID title="Numero" onChange={setNumero} keyboardType="numeric"/>
       <InputOneID title="Bairro" onChange={setBairro} />
       <InputOneID title="Cidade" onChange={setCidade} />
       <InputOneID title="UF" onChange={setUF} />

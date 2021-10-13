@@ -1,16 +1,20 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
-export default function InputOneID({ title, value, onChange, secure, keyboardType}) {
+import { TextInputMask } from 'react-native-masked-text';
+
+export default function MaskCNPJ({keyboardType, onChange, value, title }) {
     return (
-        <TextInput
-            style={styles.input}
-            placeholder={title}
-            secureTextEntry={secure}
-            onChangeText={onChange}
-            value={value}
-            keyboardType={keyboardType}
-        />
+       
+    <TextInputMask
+      style={styles.input}
+      type={'cnpj'}
+      value={value}
+      onChangeText={onChange}
+      keyboardType={keyboardType}
+      placeholder={title}
+    />
+
     );
 }
 

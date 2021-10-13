@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import { getAllUsuarioFisico } from '../../util/api/usuario/fisico/UsuarioFisicoAPI';
 import ButtonOneID from '../ButtonOneID';
 import InputOneID from '../InputOneID';
+import MaskCPF from '../Mask/MaskCPF';
 
 // You can import from local files
 
@@ -15,8 +16,12 @@ export function CadastroCPF({ setCPF, cadastrar }) {
             <View style={styles.containerText}>
                 <Text style={styles.text}>Insira o seu CPF e finalize o cadastro.</Text>
             </View>
-
-            <InputOneID title="CPF" onChange={setCPF} />
+            
+            <MaskCPF
+                keyboardType="numeric"
+                title="CPF"
+                onChange={setCPF}
+            />
             <View style={styles.containerButton}>
                 <ButtonOneID title="Cadastrar" onPress={() => cadastrar()} />
                 <ButtonOneID title="Get" onPress={() => getAllUsuarioFisico()} />

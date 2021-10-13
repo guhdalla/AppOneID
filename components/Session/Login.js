@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, KeyboardAvoidingView } from 'react-native';
 import { TokenContext, UserContext } from '../../context/UserContext';
 import { _textSession } from '../../styles/colors';
 import { login } from '../../util/api/log/in/LoginAPI';
@@ -38,7 +38,10 @@ export default function Login({ navigation }) {
     tokenContext.setToken(null);
   }, []);
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior='padding'
+      keyboardVerticalOffset={80}
+     style={styles.container}>
 
       <LogoOneID />
       {isInvalid &&
@@ -53,8 +56,8 @@ export default function Login({ navigation }) {
       {isLoading &&
         <Loading color={_textSession} />
       }
-      <ButtonTextOneID title="Cagastre-se" onPress={() => navigation.navigate("Cadastro")} />
-    </View>
+      <ButtonTextOneID title="Cadastre-se" onPress={() => navigation.navigate("Cadastro")} />
+    </KeyboardAvoidingView>
   );
 }
 

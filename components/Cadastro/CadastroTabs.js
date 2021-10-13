@@ -13,7 +13,7 @@ import { createUsuarioJuridico } from '../../util/api/usuario/juridico/UsuarioJu
 const Tab = createBottomTabNavigator();
 
 export default function CadastroTabs({ route, navigation }) {
-    const [decicao, setDecicao] = useState();
+    const [decisao, setDecisao] = useState();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
@@ -56,19 +56,20 @@ export default function CadastroTabs({ route, navigation }) {
                 setEmail={setEmail}
                 setSenha={setSenha}
                 setDataNascimento={setDataNascimento}
+                dataNascimento={dataNascimento}
             />
-            <CadastroDecisao setDesicao={setDecicao} />
-            {decicao == 1 &&
+            <CadastroDecisao setDecisao={setDecisao} />
+            {decisao == 1 &&
                 <CadastroCPF setCPF={setCPF} cadastrar={cadastrarFisico} />
             }
-            {decicao == 2 &&
+            {decisao == 2 &&
                 <CadastroEmpresa
                     setNomeFantasia={setNomeFantasia}
                     setCNPJ={setCNPJ}
                     setRazaoSocial={setRazaoSocial}
                 />
             }
-            {decicao == 2 &&
+            {decisao == 2 &&
                 <CadastroEndereco
                     setCEP={setCEP}
                     setRua={setRua}
@@ -79,7 +80,7 @@ export default function CadastroTabs({ route, navigation }) {
                     setComplemento={setComplemento}
                 />
             }
-            {decicao == 2 &&
+            {decisao == 2 &&
                 <CadastroServicos
                     authenticateID={authenticateID}
                     entranceID={entranceID}

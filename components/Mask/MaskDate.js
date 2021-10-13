@@ -1,19 +1,24 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
-export default function InputOneID({ title, value, onChange, secure, keyboardType}) {
+import { TextInputMask } from 'react-native-masked-text';
+
+export default function MaskDate({ keyboardType, onChange, value, title }) {
     return (
-        <TextInput
+
+        <TextInputMask
             style={styles.input}
-            placeholder={title}
-            secureTextEntry={secure}
-            onChangeText={onChange}
+            type={'datetime'}
             value={value}
+            onChangeText={onChange}
+            placeholder={title}
             keyboardType={keyboardType}
+            options={{
+                format: 'DD/MM/YYYY'
+            }}
         />
     );
 }
-
 const styles = StyleSheet.create({
     input: {
         marginTop: 20,

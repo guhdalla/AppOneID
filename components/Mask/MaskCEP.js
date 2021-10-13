@@ -1,19 +1,21 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
-export default function InputOneID({ title, value, onChange, secure, keyboardType}) {
+import { TextInputMask } from 'react-native-masked-text';
+
+export default function MaskCEP({ keyboardType, onChange, value, title }) {
     return (
-        <TextInput
+
+        <TextInputMask
             style={styles.input}
-            placeholder={title}
-            secureTextEntry={secure}
-            onChangeText={onChange}
+            type={'zip-code'}
             value={value}
+            onChangeText={onChange}
+            placeholder={title}
             keyboardType={keyboardType}
         />
     );
 }
-
 const styles = StyleSheet.create({
     input: {
         marginTop: 20,
@@ -23,6 +25,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         borderRadius: 3
-
     },
 })
