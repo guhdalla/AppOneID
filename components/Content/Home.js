@@ -1,23 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, StatusBar, Image, TouchableOpacity, Dimensions, FlatList, Modal, Pressable } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TokenContext, UserContext } from '../../context/UserContext';
+import { UserContext } from '../../context/UserContext';
 import { _bgCotent, _text, _textCotent, _textSession } from '../../styles/colors';
 import Icon from 'react-native-vector-icons/Feather';
 import { LineChart } from 'react-native-chart-kit';
-import { alterarStatusTag, getAllTagsForUser, vincularTag } from '../../util/api/tag/TagAPI';
+import { alterarStatusTag, getAllTagsForUser, vincularTag } from '../../util/api/ApiTagController';
 import Loading from '../Loading';
 import InputOneID from '../InputOneID';
 import ButtonOneID from '../ButtonOneID';
 import CardTagOneID from '../CardTagOneID';
+import { TokenContext } from '../../context/TokenContext';
+import { findByToken } from '../../util/api/ApiUsuarioController';
 
 const Tab = createBottomTabNavigator();
 
-
-
 export default function Home({ navigation }) {
     const screenWidth = Dimensions.get("window").width;
-    const [tagData, setTagData] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [pin, setPin] = useState(null);
@@ -26,14 +25,14 @@ export default function Home({ navigation }) {
     const userContext = useContext(UserContext);
     const tokenContext = useContext(TokenContext);
 
-    const getTags = async () => {
-        setLoading(true);
-        setTagData(await getAllTagsForUser(userContext.userData.idUsuario));
-        setLoading(false);
-    }
-
     const getUsuario = async () => {
-        userContext.setUserData(await getUser);
+        try {
+            const usuario = await findByToken(tokenContext.token);
+            userContext.setUserData(usuario);
+        } catch (error) {
+            console.log(error);
+            tokenContext.setToken(null);
+        }
     }
 
     const cadatrarTag = async () => {
@@ -43,20 +42,20 @@ export default function Home({ navigation }) {
             setLoading(false);
             return;
         }
-        await vincularTag(userContext.userData.idUsuario, pin);
+        await vincularTag(userContext.userData.idUsuario, pin, tokenContext.token);
         setLoading(false);
         setPin(null);
-        setModalVisible(!modalVisible)
-        getTags();
+        setModalVisible(!modalVisible);
+        getUsuario();
     }
 
-    const alteraStatusTag = async (codigoPin, status) => {
-        await alterarStatusTag(codigoPin, status);
-        getTags();
+    const alteraStatusTag = async (codigoPin, status ) => {
+        await alterarStatusTag(codigoPin, status, tokenContext.token);
+        getUsuario();
     }
 
     useEffect(() => {
-        getTags();
+        getUsuario();
     }, []);
     return (
         <View style={styles.container}>
@@ -164,7 +163,7 @@ export default function Home({ navigation }) {
                         </View>
                         <FlatList
                             horizontal
-                            data={tagData}
+                            data={userContext.userData.tag}
                             keyExtractor={item => item.idTag.toString()}
                             renderItem={({ item }) => (
                                 <>

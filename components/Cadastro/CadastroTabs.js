@@ -7,8 +7,8 @@ import CadastroUser from './CadastroUser'
 import { CadastroEmpresa, CadastroEndereco, CadastroServicos } from './CadastroJuridico';
 import CadastroDecisao from './CadastroDecisao';
 import { CadastroCPF } from './CadastroFisico';
-import { createUsuarioFisico } from '../../util/api/usuario/fisico/UsuarioFisicoAPI';
-import { createUsuarioJuridico } from '../../util/api/usuario/juridico/UsuarioJuridicoAPI';
+import { createUsuarioFisico } from '../../util/api/ApiUsuarioFisicoController';
+import { createUsuarioJuridico } from '../../util/api/ApiUsuarioJuridicoController';
 
 const Tab = createBottomTabNavigator();
 
@@ -89,8 +89,6 @@ export default function CadastroTabs({ route, navigation }) {
                     cadastrar={cadastrarJuridico}
                 />
             }
-
-
         </Swiper>
     );
 }

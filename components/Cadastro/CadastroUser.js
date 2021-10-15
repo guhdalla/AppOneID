@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import InputOneID from '../InputOneID';
 import MaskDate from '../Mask/MaskDate';
 

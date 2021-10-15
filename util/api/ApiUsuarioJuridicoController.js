@@ -1,4 +1,4 @@
-import { ApiUri } from "../../../ApiConfig"
+import { ApiUri } from "./ApiConfig"
 
 export const createUsuarioJuridico = async (primeiroNome, sobrenome, dataNascimento, email, telefone, senha, cnpj, entranceID, authenticateID, nomeFantasia, razaoSocial, bairro, cep, cidade, complemento, numero, rua, uf) => {
     try {

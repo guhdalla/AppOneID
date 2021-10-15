@@ -1,13 +1,8 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { getAllUsuarioFisico } from '../../util/api/usuario/fisico/UsuarioFisicoAPI';
+import { getAllUsuarioFisico } from '../../util/api/ApiUsuarioFisicoController';
 import ButtonOneID from '../ButtonOneID';
-import InputOneID from '../InputOneID';
 import MaskCPF from '../Mask/MaskCPF';
-
-// You can import from local files
-
-// or any pure javascript modules available in npm
 
 export function CadastroCPF({ setCPF, cadastrar }) {
     return (

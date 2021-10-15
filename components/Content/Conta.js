@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Pressable, Modal } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Pressable, Modal, FlatList } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { UserContext } from '../../context/UserContext';
 import Icon from 'react-native-vector-icons/Feather';
@@ -7,46 +7,66 @@ import Icon from 'react-native-vector-icons/Feather';
 import { _bgCotent, _bgSesion, _text, _textCotent, _textSession } from '../../styles/colors';
 import ButtonOneID from '../ButtonOneID';
 import InputOneID from '../InputOneID';
-import { alterarSaldo } from '../../util/api/carteira/CarteiraAPI';
+import { alterarSaldo } from '../../util/api/ApiCarteiraController';
+import Loading from '../Loading';
+import { TokenContext } from '../../context/TokenContext';
+import MaskMoney from '../Mask/MaskMoney';
 
 const Tab = createBottomTabNavigator();
 
 export default function Conta(item) {
-    const [eye, setEye] = useState(false);
-    const context = useContext(UserContext);
+    const [eye, setEye] = useState(false)
     const [isLoading, setLoading] = useState(false);
+    const [isLoadingTransacao, setLoadingTransacao] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [valor, setValor] = useState(0);
+    const [transacoes, setTransacoes] = useState([]);
+
+    const userContext = useContext(UserContext);
+    const tokenContext = useContext(TokenContext);
+
+    const consultarTransacao = async () => {
+
+    }
 
     const alterarSaldoCarteira = async () => {
         setLoading(true);
-        if (valor == 0) {
+
+        const valorFormatado = parseFloat(valor.toString().slice(2, valor.toString().length));
+
+        if (valorFormatado == 0) {
             setValor(0);
             setLoading(false);
             return;
         }
-        await alterarSaldo(context.userData.carteira.id, valor);
+        const json = await alterarSaldo(userContext.userData.carteira.id, valorFormatado, tokenContext.token);
+        if (json == null) return;
+        userContext.userData.carteira.saldo = userContext.userData.carteira.saldo + valorFormatado;
         setLoading(false);
-        setPin(0);
+        setValor(0);
         setModalVisible(!modalVisible)
-        // getTags();
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.containerHeader}>
-                <View style={styles.containerRowPad}>
+                {isLoading &&
+                    <Loading />
+                }
+                {!isLoading &&
+                    <View style={styles.containerRowPad}>
 
-                    <TouchableOpacity
-                        onPress={() => { eye ? setEye(false) : setEye(true) }}
-                        style={styles.containerIcon}
-                    >
-                        <Icon name={eye ? "eye" : "eye-off"} color={_textSession} size={30} />
-                    </TouchableOpacity>
-                    <View style={styles.containerConta}>
-                        <Text style={styles.textH1}>R$ {eye ? context.userData.carteira.saldo : "*****"}</Text>
+                        <TouchableOpacity
+                            onPress={() => { eye ? setEye(false) : setEye(true) }}
+                            style={styles.containerIcon}
+                        >
+                            <Icon name={eye ? "eye" : "eye-off"} color={_textSession} size={30} />
+                        </TouchableOpacity>
+                        <View style={styles.containerConta}>
+                            <Text style={styles.textH1}>R$ {eye ? userContext.userData.carteira.saldo : "*****"}</Text>
+                        </View>
                     </View>
-                </View>
+                }
                 <View style={styles.iconBar}>
                     <View style={styles.iconComponent} >
                         <Pressable onPress={() => setModalVisible(true)} style={styles.icon} >
@@ -69,14 +89,26 @@ export default function Conta(item) {
                             </View>
                             <View style={styles.containerModal}>
                                 <Text style={styles.textH3Light}>Digite o valor que deseja depositar</Text>
-                                <InputOneID title="Valor"/>
-                                <ButtonOneID title="Confirmar" onPress={() => onAlteraStatus(item.codigoPin, 3)} />
+                                <MaskMoney title="Valor" value={valor} onChange={setValor} keyboardType="numeric" />
+                                <ButtonOneID title="Confirmar" onPress={() => alterarSaldoCarteira()} />
                             </View>
                         </View>
                     </Modal>
                 </View>
             </View>
             <View>
+                {isLoadingTransacao &&
+                    <Loading />
+                }
+                {!isLoadingTransacao &&
+                    <FlatList
+                        data={transacoes}
+                        keyExtractor={item => item.idTag.toString()}
+                        renderItem={({ item }) => (
+                            <Transacao/>
+                        )}
+                    />
+                }
             </View>
         </View>
     );

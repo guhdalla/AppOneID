@@ -1,4 +1,4 @@
-import { ApiUri } from "../../../ApiConfig";
+import { ApiUri } from "./ApiConfig";
 
 export const login = async (email, senha) => {
     try {
@@ -13,9 +13,8 @@ export const login = async (email, senha) => {
                 "password": senha
             })
         })
-        console.log(response.status);
         if (response.status != 200) {
-            return null;
+            return;
         } 
         const json = await response.text();
         return json;

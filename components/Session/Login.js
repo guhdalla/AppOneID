@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Text, KeyboardAvoidingView } from 'react-native';
-import { TokenContext, UserContext } from '../../context/UserContext';
+import { TokenContext } from '../../context/TokenContext';
 import { _textSession } from '../../styles/colors';
-import { login } from '../../util/api/log/in/LoginAPI';
+import { login } from '../../util/api/ApiLoginController';
 import AlertOneID from '../AlertOneID';
 import ButtonOneID from '../ButtonOneID';
 import ButtonTextOneID from '../ButtonTextOneID';
@@ -16,36 +16,31 @@ export default function Login({ navigation }) {
   const [isLoading, setLoading] = useState(false);
   const [isInvalid, setInvalid] = useState(false);
 
-  const userContext = useContext(UserContext);
   const tokenContext = useContext(TokenContext);
 
   const isLogged = async () => {
     setLoading(true);
-    setInvalid(false);
-    const token = await login(email, senha)
-    
+
+    const token = await login(email, senha);
+
     if (token != null) {
-      tokenContext.setToken("Bearer " + token);
-      navigation.navigate("Navbar");
+        tokenPrefix = "Bearer " + token;
+        tokenContext.setToken(tokenPrefix);
     } else {
       setInvalid(true);
     }
     setLoading(false);
   }
 
-  useEffect(() => {
-    userContext.setUserData(null);
-    tokenContext.setToken(null);
-  }, []);
   return (
     <KeyboardAvoidingView
       behavior='padding'
       keyboardVerticalOffset={80}
-     style={styles.container}>
+      style={styles.container}>
 
       <LogoOneID />
       {isInvalid &&
-        <AlertOneID message="Login Invalido!" type="invalid"/>
+        <AlertOneID message="Login Invalido!" type="invalid" />
       }
       <InputOneID title="Digite seu email" onChange={setEmail} />
       <InputOneID title="Digite sua senha" secure={true} onChange={setSenha} />
@@ -56,7 +51,9 @@ export default function Login({ navigation }) {
       {isLoading &&
         <Loading color={_textSession} />
       }
-      <ButtonTextOneID title="Cadastre-se" onPress={() => navigation.navigate("Cadastro")} />
+      <View style={styles.containerButton}>
+        <ButtonTextOneID title="Cadastre-se" onPress={() => navigation.navigate("Cadastro")} />
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -68,5 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#000001',
   },
-
+  containerButton: {
+    padding: 20
+  }
 });

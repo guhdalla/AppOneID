@@ -5,10 +5,6 @@ import InputOneID from '../InputOneID';
 import MaskCEP from '../Mask/MaskCEP';
 import MaskCNPJ from '../Mask/MaskCNPJ';
 
-// You can import from local files
-
-// or any pure javascript modules available in npm
-
 export function CadastroEmpresa({ setNomeFantasia, setCNPJ, setRazaoSocial }) {
   return (
     <View style={styles.container}>

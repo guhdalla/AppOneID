@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import Home from './Home';
 import Conta from './Conta';
+import { UserContext } from '../../context/UserContext';
+import { findByToken } from '../../util/api/ApiUsuarioController';
+import { TokenContext } from '../../context/TokenContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
+  // const userContext = useContext(UserContext);
+  // const tokenContext = useContext(TokenContext);
+
+  // const getUsuario = async () => {
+  //   console.log("1");
+  //   try {
+  //     const usuario = await findByToken(tokenContext.token);
+  //     userContext.setUserData(usuario);
+  //   } catch (error) {
+  //     console.log(error);
+  //     tokenContext.setToken(null);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getUsuario();
+  // }, []);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

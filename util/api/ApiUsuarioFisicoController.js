@@ -1,4 +1,4 @@
-import { ApiUri } from "../../../ApiConfig"
+import { ApiUri } from "./ApiConfig"
 
 export const createUsuarioFisico = async (primeiroNome, sobrenome, dataNascimento, email, telefone, senha, cpf) => {
     try {
