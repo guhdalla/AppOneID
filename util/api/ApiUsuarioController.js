@@ -12,7 +12,6 @@ export const findByToken = async (token) => {
             return;
         }
         const json = await response.json();
-        console.log(json)
         return json;
     } catch (error) {
         console.error(error);

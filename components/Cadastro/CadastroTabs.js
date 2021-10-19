@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 
 export default function CadastroTabs({ route, navigation }) {
     const [decisao, setDecisao] = useState();
-    const [firstName, setFirstName] = useState('');
+    const [primeiroNome, setPrimeiroNome] = useState('');
     const [lastName, setLastName] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [celular, setCelular] = useState('');
@@ -35,11 +35,12 @@ export default function CadastroTabs({ route, navigation }) {
     const [entranceID, setEntranceID] = useState(false);
 
     const cadastrarFisico = async () => {
-        await createUsuarioFisico(firstName, lastName, dataNascimento, email, celular, senha, CPF);
+        console.log(primeiroNome + lastName + dataNascimento + email + celular + senha + CPF)
+        await createUsuarioFisico(primeiroNome, lastName, dataNascimento, email, celular, senha, CPF);
     }
 
     const cadastrarJuridico = async () => {
-        await  createUsuarioJuridico(firstName, lastName, dataNascimento, email, celular, senha, 
+        await  createUsuarioJuridico(primeiroNome, lastName, dataNascimento, email, celular, senha, 
             CNPJ, entranceID, authenticateID, nomeFantasia, razaoSocial, bairro, CEP, cidade, complemento, numero, rua, UF);
     }
 
@@ -50,7 +51,7 @@ export default function CadastroTabs({ route, navigation }) {
             loop={false}
         >
             <CadastroUser
-                setFirtName={setFirstName}
+                setPrimeiroNome={setPrimeiroNome}
                 setLastName={setLastName}
                 setCelular={setCelular}
                 setEmail={setEmail}

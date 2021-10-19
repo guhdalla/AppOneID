@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Pressable, Modal, FlatList } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { UserContext } from '../../context/UserContext';
@@ -11,6 +11,8 @@ import { alterarSaldo } from '../../util/api/ApiCarteiraController';
 import Loading from '../Loading';
 import { TokenContext } from '../../context/TokenContext';
 import MaskMoney from '../Mask/MaskMoney';
+import { getTransacoes } from '../../util/api/ApiTransacaoController';
+import { TransacaoFisico, TransacaoJuridico } from '../TransacaoOneID';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +28,9 @@ export default function Conta(item) {
     const tokenContext = useContext(TokenContext);
 
     const consultarTransacao = async () => {
-
+        setLoadingTransacao(true);
+        setTransacoes(await getTransacoes(tokenContext.token));
+        setLoadingTransacao(false);
     }
 
     const alterarSaldoCarteira = async () => {
@@ -47,6 +51,9 @@ export default function Conta(item) {
         setModalVisible(!modalVisible)
     }
 
+    useEffect(() => {
+        consultarTransacao();
+    }, []);
     return (
         <View style={styles.container}>
             <View style={styles.containerHeader}>
@@ -96,16 +103,24 @@ export default function Conta(item) {
                     </Modal>
                 </View>
             </View>
-            <View>
+            <View style={styles.containerTransacoes}>
                 {isLoadingTransacao &&
                     <Loading />
                 }
                 {!isLoadingTransacao &&
                     <FlatList
                         data={transacoes}
-                        keyExtractor={item => item.idTag.toString()}
+                        keyExtractor={item => item.id.toString()}
                         renderItem={({ item }) => (
-                            <Transacao/>
+                            <>
+                                {Object.values(userContext.userData.authorities)[0].authority == "ROLE_FISICO" &&
+                                    <TransacaoFisico item={item} />
+                                }
+                                {Object.values(userContext.userData.authorities)[0].authority == "ROLE_JURIDICO" &&
+                                    <TransacaoJuridico item={item} />
+                                }
+
+                            </>
                         )}
                     />
                 }
@@ -118,6 +133,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: _bgCotent,
+    },
+    containerTransacoes:{
+        flex: 0.6,
     },
     containerHeader: {
         flex: 0.4,

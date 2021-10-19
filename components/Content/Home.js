@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Text, View, StyleSheet, StatusBar, Image, TouchableOpacity, Dimensions, FlatList, Modal, Pressable } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions, FlatList, Modal, Pressable } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { UserContext } from '../../context/UserContext';
 import { _bgCotent, _text, _textCotent, _textSession } from '../../styles/colors';
@@ -12,6 +12,8 @@ import ButtonOneID from '../ButtonOneID';
 import CardTagOneID from '../CardTagOneID';
 import { TokenContext } from '../../context/TokenContext';
 import { findByToken } from '../../util/api/ApiUsuarioController';
+import { ApiUri } from '../../util/api/ApiConfig';
+import CardDispositivoOneID from '../CardDispositivoOneID';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +23,7 @@ export default function Home({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [pin, setPin] = useState(null);
     const [eye, setEye] = useState(false);
+    const [role, setRole] = useState('');
 
     const userContext = useContext(UserContext);
     const tokenContext = useContext(TokenContext);
@@ -29,6 +32,7 @@ export default function Home({ navigation }) {
         try {
             const usuario = await findByToken(tokenContext.token);
             userContext.setUserData(usuario);
+            setRole(Object.values(userContext.userData.authorities)[0].authority);
         } catch (error) {
             console.log(error);
             tokenContext.setToken(null);
@@ -49,7 +53,12 @@ export default function Home({ navigation }) {
         getUsuario();
     }
 
-    const alteraStatusTag = async (codigoPin, status ) => {
+    const alteraStatusTag = async (codigoPin, status) => {
+        await alterarStatusTag(codigoPin, status, tokenContext.token);
+        getUsuario();
+    }
+
+    const alteraStatusDispositivo = async (codigoPin, status) => {
         await alterarStatusTag(codigoPin, status, tokenContext.token);
         getUsuario();
     }
@@ -58,7 +67,9 @@ export default function Home({ navigation }) {
         getUsuario();
     }, []);
     return (
-        <View style={styles.container}>
+        <ScrollView
+            behavior='padding'
+            style={styles.container}>
             <View style={styles.containerRowPad}>
                 <View style={styles.containerWelcome}>
                     <Text style={styles.textH1}>Olá,</Text>
@@ -67,9 +78,10 @@ export default function Home({ navigation }) {
                 <View style={styles.containerFoto}>
                     <Image
                         style={styles.fotoPerfil}
-                        source={{
-                            uri: 'https://avatars.githubusercontent.com/u/61202563?v=4',
-                        }} />
+                        source={
+                            userContext.userData.fotoPerfil == null ?
+                                require("../../assets/perfil.jpg") : { uri: `${ApiUri}/api/img/${userContext.userData.idUsuario}.jpg` }
+                        } />
                 </View>
             </View>
             <TouchableOpacity style={styles.containerRowPad}
@@ -140,7 +152,6 @@ export default function Home({ navigation }) {
                                 <Icon name="plus-circle" color={_textCotent} size={25} />
                             </Pressable>
                             <Modal
-                                style={styles.modal}
                                 animationType="fade"
                                 visible={modalVisible}
                                 onRequestClose={() => {
@@ -178,7 +189,50 @@ export default function Home({ navigation }) {
                     </>
                 }
             </View>
-        </View>
+            <View>
+                {role == "ROLE_JURIDICO" &&
+                    <>
+                        <View style={[styles.containerRow, styles.containerTag]}>
+                            <Text style={styles.textH2}>Seus Dispositivos.</Text>
+                            <Pressable onPress={() => setModalVisible(true)} >
+                                <Icon name="plus-circle" color={_textCotent} size={25} />
+                            </Pressable>
+                            <Modal
+                                animationType="fade"
+                                visible={modalVisible}
+                                onRequestClose={() => {
+                                    setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <View style={styles.bgModal}>
+                                    <View style={styles.containerModalBack}>
+                                        <Pressable onPress={() => setModalVisible(!modalVisible)} >
+                                            <Icon name="arrow-left" color={_textCotent} size={25} />
+                                        </Pressable>
+                                    </View>
+                                    <View style={styles.containerModal}>
+                                        <Text style={styles.textH2}>Insira o pin da tag para vincular com voce</Text>
+                                        <InputOneID title="Pin" onChange={setPin} />
+                                        <ButtonOneID title="Vincular" onPress={() => cadatrarTag()} />
+                                    </View>
+                                </View>
+                            </Modal>
+                        </View>
+                        <FlatList
+                            horizontal
+                            data={userContext.userData.dispositivos}
+                            keyExtractor={item => item.idDispositivo.toString()}
+                            renderItem={({ item }) => (
+                                <>
+                                    {item.numeroStatus != 0 && item.numeroStatus != 3 ?
+                                        <CardDispositivoOneID item={item} onAlteraStatus={alteraStatusDispositivo} /> : null}
+                                </>
+                            )}
+                        />
+                    </>
+                }
+            </View>
+        </ScrollView>
     );
 }
 

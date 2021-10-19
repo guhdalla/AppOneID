@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Image, View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { Image, View, StyleSheet } from 'react-native';
 import ButtonOneID from '../ButtonOneID';
 
 export default function CadastroDecisao({ setDecisao }) {
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'black',
-    flexDirection:'row'
   },
   pessoaFisica:{
     flex:0.5,

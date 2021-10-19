@@ -14,9 +14,8 @@ export const createUsuarioFisico = async (primeiroNome, sobrenome, dataNasciment
                 "dataNascimento": dataNascimento,
                 "email": email,
                 "telefone": telefone,
-                "senha": senha,
+                "password": senha,
                 "cpf": cpf,
-                "fotoPerfil": "foto"
             })
         })
         const json = await response.text();
