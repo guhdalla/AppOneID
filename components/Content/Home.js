@@ -14,6 +14,7 @@ import { TokenContext } from '../../context/TokenContext';
 import { findByToken } from '../../util/api/ApiUsuarioController';
 import { ApiUri } from '../../util/api/ApiConfig';
 import CardDispositivoOneID from '../CardDispositivoOneID';
+import { alterarStatusDispositivo, vincularDispositivo } from '../../util/api/ApiDispositivoController';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +22,8 @@ export default function Home({ navigation }) {
     const screenWidth = Dimensions.get("window").width;
     const [isLoading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [pin, setPin] = useState(null);
+    const [pinTag, setPinTag] = useState(null);
+    const [pinDispositivo, setPinDispositivo] = useState(null);
     const [eye, setEye] = useState(false);
     const [role, setRole] = useState('');
 
@@ -41,14 +43,28 @@ export default function Home({ navigation }) {
 
     const cadatrarTag = async () => {
         setLoading(true);
-        if (pin == null) {
-            setPin(null);
+        if (pinTag == null) {
+            setPinTag(null);
             setLoading(false);
             return;
         }
-        await vincularTag(userContext.userData.idUsuario, pin, tokenContext.token);
+        await vincularTag(userContext.userData.idUsuario, pinTag, tokenContext.token);
         setLoading(false);
-        setPin(null);
+        setPinTag(null);
+        setModalVisible(!modalVisible);
+        getUsuario();
+    }
+
+    const cadatrarDispositivo = async () => {
+        setLoading(true);
+        if (pinDispositivo == null) {
+            setPinDispositivo(null);
+            setLoading(false);
+            return;
+        }
+        await vincularDispositivo(pinDispositivo, tokenContext.token);
+        setLoading(false);
+        setPinDispositivo(null);
         setModalVisible(!modalVisible);
         getUsuario();
     }
@@ -59,7 +75,7 @@ export default function Home({ navigation }) {
     }
 
     const alteraStatusDispositivo = async (codigoPin, status) => {
-        await alterarStatusTag(codigoPin, status, tokenContext.token);
+        await alterarStatusDispositivo(codigoPin, status, tokenContext.token);
         getUsuario();
     }
 
@@ -166,7 +182,7 @@ export default function Home({ navigation }) {
                                     </View>
                                     <View style={styles.containerModal}>
                                         <Text style={styles.textH2}>Insira o pin da tag para vincular com voce</Text>
-                                        <InputOneID title="Pin" onChange={setPin} />
+                                        <InputOneID title="Pin" onChange={setPinTag} />
                                         <ButtonOneID title="Vincular" onPress={() => cadatrarTag()} />
                                     </View>
                                 </View>
@@ -211,9 +227,9 @@ export default function Home({ navigation }) {
                                         </Pressable>
                                     </View>
                                     <View style={styles.containerModal}>
-                                        <Text style={styles.textH2}>Insira o pin da tag para vincular com voce</Text>
-                                        <InputOneID title="Pin" onChange={setPin} />
-                                        <ButtonOneID title="Vincular" onPress={() => cadatrarTag()} />
+                                        <Text style={styles.textH2}>Insira o pin do dispositivo para vincular com sua empresa.</Text>
+                                        <InputOneID title="Pin" onChange={setPinDispositivo} />
+                                        <ButtonOneID title="Vincular" onPress={() => cadatrarDispositivo()} />
                                     </View>
                                 </View>
                             </Modal>
@@ -224,7 +240,7 @@ export default function Home({ navigation }) {
                             keyExtractor={item => item.idDispositivo.toString()}
                             renderItem={({ item }) => (
                                 <>
-                                    {item.numeroStatus != 0 && item.numeroStatus != 3 ?
+                                    {item.statusDispositivo != 0 && item.statusDispositivo != 3 ?
                                         <CardDispositivoOneID item={item} onAlteraStatus={alteraStatusDispositivo} /> : null}
                                 </>
                             )}
@@ -293,7 +309,7 @@ const styles = StyleSheet.create({
     containerModal: {
         alignItems: 'center',
         justifyContent: 'center',
-
+        padding: 30
     },
     containerModalBack: {
         padding: 20

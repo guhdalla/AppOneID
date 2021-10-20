@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Switch, Text, View, Modal, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { _bgCotent, _bgSesion, _detail, _textCotent, _textSession, _true } from '../styles/colors';
+import { _bgCotent, _bgSesion, _detail, _detail2, _textCotent, _textSession, _true } from '../styles/colors';
 import ButtonOneID from './ButtonOneID';
 import LogoOneID from './LogoOneID';
 
@@ -46,7 +46,7 @@ export default function CardDispositivoOneID({ item, onAlteraStatus}) {
                             </Pressable>
                         </View>
                         <View style={styles.containerModal}>
-                            <Text style={styles.textH1}>Tem certeza que deseja bloquear a tag?</Text>
+                            <Text style={styles.textH1}>Tem certeza que deseja bloquear o Dispositivo?</Text>
                             <Text style={styles.textH3}>Apos o bloqueio a tag ficara indisponivel para uso por periodo indeterminado</Text>
                             <ButtonOneID title="Confirmar" onPress={() => onAlteraStatus(item.codigoPin, 3)}/>
                         </View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 5,
         margin: 20,
-        backgroundColor: _detail,
+        backgroundColor: _detail2,
         borderRadius: 20,
         height: 120,
         width: 250

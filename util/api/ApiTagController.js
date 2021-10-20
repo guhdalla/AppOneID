@@ -16,7 +16,6 @@ export const getAllTagsForUser = async (idUsuario, token) => {
 
 export const vincularTag = async (idUsuario, codigoPin, token) => {
     try {
-        console.log(idUsuario)
         const response = await fetch(ApiUri + "/api/tag/" + codigoPin, {
             method: 'PUT',
             headers: {
