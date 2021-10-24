@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Home from './Home';
 import Conta from './Conta';
 import Atividades from './Atividades';
+import { Perfil } from './Perfil';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +30,7 @@ export default function Navbar() {
               iconName = 'home';
               break;
             case 'Perfil':
-              iconName = 'profile';
+              iconName = 'user';
               break;
             default:
               iconName = 'add';
@@ -46,7 +47,7 @@ export default function Navbar() {
       {/* {Object.values(userContext.userData.authorities)[0].authority == "ROLE_JURIDICO" &&
         <Tab.Screen name="Dispositivos" component={Dispositivo} />
       } */}
-      {/* <Tab.Screen name="Perfil" component={Perfil} /> */}
+      <Tab.Screen name="Perfil" component={Perfil} />
     </Tab.Navigator>
   );
 }

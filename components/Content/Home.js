@@ -82,7 +82,6 @@ export default function Home({ navigation }) {
     }
 
     const getRole = async () => {
-        console.log("ROLE" + Object.values(userContext.userData.authorities)[0].authority)
         setRole(Object.values(userContext.userData.authorities)[0].authority);
         if (role == "ROLE_JURIDICO") {
             await consultarDispositivo();
