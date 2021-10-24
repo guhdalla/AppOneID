@@ -11,48 +11,50 @@ import { TokenContext } from '../../context/TokenContext';
 const Stack = createNativeStackNavigator();
 
 export default function NavigationSession() {
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState(null);
     const [token, setToken] = useState('');
 
-    if (!token) {
+    if (!userData) {
         return (
             <NavigationContainer>
-                <TokenContext.Provider value={{ token, setToken }}>
-                    <Stack.Navigator
-                        initialRouteName="Login"
-                        screenOptions={{
-                            headerShown: false,
-                            headerStyle: {
-                                backgroundColor: '#151515',
-                            },
-                            headerTintColor: 'white',
-                            headerTitleStyle: {
-                                fontSize: 22,
-                                fontWeight: "bold"
-                            }
-                        }}
-                    >
-                        <Stack.Screen
-                            name="Login"
-                            component={Login}
-                            options={{ title: "Login" }}
-                        />
-                        <Stack.Screen
-                            name="Cadastro"
-                            component={CadastroTabs}
-                            options={{
-                                title: 'Cadastrar Usuario',
-                                headerShown: true,
+                <UserContext.Provider value={{ userData, setUserData }}>
+                    <TokenContext.Provider value={{ token, setToken }}>
+                        <Stack.Navigator
+                            initialRouteName="Login"
+                            screenOptions={{
+                                headerShown: false,
+                                headerStyle: {
+                                    backgroundColor: '#151515',
+                                },
+                                headerTintColor: 'white',
+                                headerTitleStyle: {
+                                    fontSize: 22,
+                                    fontWeight: "bold"
+                                }
                             }}
-                        />
-                    </Stack.Navigator>
-                </TokenContext.Provider>
+                        >
+                            <Stack.Screen
+                                name="Login"
+                                component={Login}
+                                options={{ title: "Login" }}
+                            />
+                            <Stack.Screen
+                                name="Cadastro"
+                                component={CadastroTabs}
+                                options={{
+                                    title: 'Cadastrar Usuario',
+                                    headerShown: true,
+                                }}
+                            />
+                        </Stack.Navigator>
+                    </TokenContext.Provider>
+                </UserContext.Provider>
                 <StatusBar barStyle="default" />
             </NavigationContainer>
         );
     }
 
-    if (token) {
+    if (userData) {
         return (
             <NavigationContainer>
                 <UserContext.Provider value={{ userData, setUserData }}>

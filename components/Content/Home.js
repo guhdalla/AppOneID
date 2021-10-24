@@ -11,10 +11,9 @@ import InputOneID from '../InputOneID';
 import ButtonOneID from '../ButtonOneID';
 import CardTagOneID from '../CardTagOneID';
 import { TokenContext } from '../../context/TokenContext';
-import { findByToken } from '../../util/api/ApiUsuarioController';
 import { ApiUri } from '../../util/api/ApiConfig';
 import CardDispositivoOneID from '../CardDispositivoOneID';
-import { alterarStatusDispositivo, vincularDispositivo } from '../../util/api/ApiDispositivoController';
+import { alterarStatusDispositivo, getAllDispositivosForUser, vincularDispositivo } from '../../util/api/ApiDispositivoController';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,19 +25,22 @@ export default function Home({ navigation }) {
     const [pinDispositivo, setPinDispositivo] = useState(null);
     const [eye, setEye] = useState(false);
     const [role, setRole] = useState('');
+    const [tags, setTags] = useState([]);
+    const [dispositivos, setDispositivos] = useState([]);
 
     const userContext = useContext(UserContext);
     const tokenContext = useContext(TokenContext);
 
-    const getUsuario = async () => {
-        try {
-            const usuario = await findByToken(tokenContext.token);
-            userContext.setUserData(usuario);
-            setRole(Object.values(userContext.userData.authorities)[0].authority);
-        } catch (error) {
-            console.log(error);
-            tokenContext.setToken(null);
-        }
+    const consultarTag = async () => {
+        setLoading(true);
+        setTags(await getAllTagsForUser(userContext.userData.idUsuario, tokenContext.token));
+        setLoading(false);
+    }
+
+    const consultarDispositivo = async () => {
+        setLoading(true);
+        setDispositivos(await getAllDispositivosForUser(userContext.userData.idUsuario, tokenContext.token));
+        setLoading(false);
     }
 
     const cadatrarTag = async () => {
@@ -52,7 +54,7 @@ export default function Home({ navigation }) {
         setLoading(false);
         setPinTag(null);
         setModalVisible(!modalVisible);
-        getUsuario();
+        await consultarTag();
     }
 
     const cadatrarDispositivo = async () => {
@@ -66,21 +68,30 @@ export default function Home({ navigation }) {
         setLoading(false);
         setPinDispositivo(null);
         setModalVisible(!modalVisible);
-        getUsuario();
+        await consultarDispositivo();
     }
 
     const alteraStatusTag = async (codigoPin, status) => {
         await alterarStatusTag(codigoPin, status, tokenContext.token);
-        getUsuario();
+        await consultarTag();
     }
 
     const alteraStatusDispositivo = async (codigoPin, status) => {
         await alterarStatusDispositivo(codigoPin, status, tokenContext.token);
-        getUsuario();
+        await consultarDispositivo();
+    }
+
+    const getRole = async () => {
+        console.log("ROLE" + Object.values(userContext.userData.authorities)[0].authority)
+        setRole(Object.values(userContext.userData.authorities)[0].authority);
+        if (role == "ROLE_JURIDICO") {
+            await consultarDispositivo();
+        }
+        await consultarTag();
     }
 
     useEffect(() => {
-        getUsuario();
+        getRole();
     }, []);
     return (
         <ScrollView
@@ -190,7 +201,7 @@ export default function Home({ navigation }) {
                         </View>
                         <FlatList
                             horizontal
-                            data={userContext.userData.tag}
+                            data={tags}
                             keyExtractor={item => item.idTag.toString()}
                             renderItem={({ item }) => (
                                 <>
@@ -236,7 +247,7 @@ export default function Home({ navigation }) {
                         </View>
                         <FlatList
                             horizontal
-                            data={userContext.userData.dispositivos}
+                            data={dispositivos}
                             keyExtractor={item => item.idDispositivo.toString()}
                             renderItem={({ item }) => (
                                 <>
@@ -302,6 +313,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     containerTag: {
+        marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
         justifyContent: 'space-around',

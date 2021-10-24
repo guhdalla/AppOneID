@@ -41,3 +41,18 @@ export const vincularDispositivo = async (codigoPin, token) => {
         console.error(error);
     }
 }
+
+export const getAllDispositivosForUser = async (idUsuario, token) => {
+    try {
+        const response = await fetch(ApiUri + "/api/dispositivo/" + idUsuario, {
+            headers: {
+                'Authorization': token,
+            },
+        })
+        const json = await response.json();
+        console.log(json)
+        return json;
+    } catch (error) {
+        console.error(error);
+    }
+}

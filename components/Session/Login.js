@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, Text, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { TokenContext } from '../../context/TokenContext';
+import { UserContext } from '../../context/UserContext';
 import { _textSession } from '../../styles/colors';
 import { login } from '../../util/api/ApiLoginController';
+import { findByToken } from '../../util/api/ApiUsuarioController';
 import AlertOneID from '../AlertOneID';
 import ButtonOneID from '../ButtonOneID';
 import ButtonTextOneID from '../ButtonTextOneID';
@@ -17,6 +19,7 @@ export default function Login({ navigation }) {
   const [isInvalid, setInvalid] = useState(false);
 
   const tokenContext = useContext(TokenContext);
+  const userContext = useContext(UserContext);
 
   const isLogged = async () => {
     setLoading(true);
@@ -24,12 +27,23 @@ export default function Login({ navigation }) {
     const token = await login(email, senha);
 
     if (token != null) {
-        tokenPrefix = "Bearer " + token;
-        tokenContext.setToken(tokenPrefix);
+      const tokenPrefix = "Bearer " + token;
+      tokenContext.setToken(tokenPrefix);
+      await getUsuario(tokenPrefix);
     } else {
       setInvalid(true);
     }
     setLoading(false);
+  }
+
+  const getUsuario = async (tokenPrefix) => {
+    try {
+      const usuario = await findByToken(tokenPrefix);
+      userContext.setUserData(usuario);
+    } catch (error) {
+      console.log(error);
+      tokenContext.setToken(null);
+    }
   }
 
   return (
